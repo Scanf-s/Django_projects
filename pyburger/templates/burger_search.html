@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+    <h1>pyburger search</h1>
+    <div>
+        <form method="GET">
+            <input type="text" name="query">
+            <button type="submit">Search</button>
+        </form>
+    </div>
+    <h2>Result</h2>
+    {% for burger in burgers %}
+        <div>
+        {{ burger.name }}
+        {{ burger.price }}원
+        {{ burger.calories }}kcal
+        </div>
+    {% endfor %}
+</body>
+</html>

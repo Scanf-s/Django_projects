@@ -263,4 +263,8 @@ poetry.toml
 # LSP config files
 pyrightconfig.json
 
+# Project
+pyburger/.idea
+membership/.idea
+
 # End of https://www.toptal.com/developers/gitignore/api/django,python
