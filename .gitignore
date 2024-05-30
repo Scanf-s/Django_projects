@@ -266,5 +266,6 @@ pyrightconfig.json
 # Project
 pyburger/.idea
 membership/.idea
+pylog/.idea
 
 # End of https://www.toptal.com/developers/gitignore/api/django,python

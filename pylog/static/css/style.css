@@ -1,0 +1,333 @@
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+ul, ol {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    padding: 0;
+    margin: 0;
+    font-weight: 300;
+}
+
+h2 {
+    font-size: 1.42rem;
+}
+
+a {
+    text-decoration: none;
+    color: #333;
+}
+
+html {
+    margin: 0;
+    font-family: "Noto Sans KR", serif;
+    font-weight: 300;
+    font-size: 14px;
+    color: #333;
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    height: 100%;
+}
+
+#index {
+    display: flex;
+    flex-direction: column;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    height: 100%;
+    margin-top: -4vh;
+}
+
+#index > h1 {
+    margin-bottom: 4px;
+}
+
+#navbar {
+    position: fixed;
+    top: 0;
+    width: 100%;
+    z-index: 999;
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, 0.9);
+    color: #666;
+    font-size: 1.3rem;
+    height: 59px;
+    border-bottom: 1px solid #ddd;
+}
+
+#navbar > span {
+    margin-top: -2px;
+}
+
+#navbar img {
+    height: 29.5px;
+    border-radius: 3px;
+    margin-right: 10px;
+}
+
+#navbar .btn {
+    position: absolute;
+    right: 20px;
+}
+
+.btn {
+    width: 66px;
+    height: 30px;
+    line-height: 25px;
+    background-color: #fff;
+    border-radius: 15px;
+    transition-duration: 0.3s;
+    transition-timing-function: ease;
+    font-size: 12px;
+    cursor: pointer;
+    text-align: center;
+}
+
+a.btn {
+    height: 28px;
+}
+
+.btn-primary {
+    border: 1px solid #00c3bd;
+    color: #00c3bd;
+}
+
+.btn-primary:hover {
+    color: white;
+    background-color: #00c3bd;
+}
+
+.btn-secondary {
+    border: 1px solid #bbb;
+    color: #666;
+}
+
+.btn-secondary:hover {
+    color: white;
+    background-color: #bbb;
+}
+
+ul.comments {
+    font-size: 12px;
+}
+
+ul.comments > div {
+    border-top: 1px solid #eee;
+    margin-top: 30px;
+    padding-top: 10px;
+    font-weight: 500;
+}
+
+ul.comments > li.comment {
+    list-style: disc;
+    margin-left: 1.5em;
+}
+
+ul.comments > li.comment-empty {
+    font-style: italic;
+}
+
+@media only screen and (hover: none) and (pointer: coarse) {
+    html {
+        font-size: 4vw;
+    }
+
+    #post-list {
+        padding: 14vw 0;
+    }
+
+    #navbar {
+        height: 14vw;
+    }
+
+    ul.posts {
+        margin: 0 5vw;
+        padding: 0;
+    }
+
+    ul.posts > li.post {
+        padding: 5vw 0 5vw 0;
+    }
+
+    ul.posts > li.post h2 {
+        font-size: 1.3rem;
+    }
+
+    ul.posts > li.post p {
+        font-size: .9rem;
+        padding-right: 22vw;
+    }
+
+    ul.posts > li.post img {
+        width: 20vw;
+        height: 20vw;
+        top: 16vw;
+        right: 0;
+    }
+
+    ul.comments {
+        font-size: .8rem;
+    }
+}
+
+#post-list {
+    padding: 59px 0;
+}
+
+ul.posts {
+    display: flex;
+    flex-direction: column;
+    margin: 0 auto;
+    max-width: 960px;
+    padding: 0 20px;
+}
+
+ul.posts > li.post {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    padding: 20px 130px 20px 0;
+}
+
+ul.posts > li.post:not(:last-child) {
+    border-bottom: 1px solid #eee;
+}
+
+ul.posts > li.post h2 {
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+ul.posts > li.post p {
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+ul.posts > li.post img {
+    position: absolute;
+    top: 17px;
+    right: 0;
+    width: 120px;
+    height: 120px;
+    object-fit: cover;
+}
+
+ul.posts > li.post img[alt]:after {
+    display: block;
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: #fff;
+    box-sizing: border-box;
+    border: 1px solid #ddd;
+    font-weight: 300;
+    line-height: 2;
+    text-align: center;
+    content: attr(alt);
+}
+
+#post-detail {
+    padding: 59px 10px;
+}
+
+#post-detail ul.post-detail-comments li.post-detail-comment {
+    list-style: disc;
+    margin-left: 1.5em;
+}
+
+#post-detail ul.post-detail-comments li.post-detail-comment-empty {
+    font-style: italic;
+}
+
+#post-detail > form {
+    width: 100%;
+    margin-top: 10px;
+    display: flex;
+}
+
+#post-detail > form > textarea {
+    border: 1px solid #eee;
+    padding: 10px;
+    box-sizing: border-box;
+    resize: none;
+    border-radius: 2px;
+    flex-grow: 1;
+    margin-right: 6px;
+}
+
+#post-detail > form > textarea:focus {
+    outline: none;
+}
+
+#post-detail > form > button {
+    height: 57px;
+    line-height: 50px;
+    border-radius: 2px;
+}
+
+#post-add {
+    padding: 59px 0;
+}
+
+#post-add input, #post-add textarea {
+    border: none;
+    padding: 10px;
+}
+
+#post-add input:focus, #post-add textarea:focus {
+    outline: none;
+}
+
+#post-add textarea {
+    width: 100%;
+    min-height: 100px;
+    box-sizing: border-box;
+    resize: none;
+}
+
+#post-add > form {
+    width: 100%;
+}
+
+#post-add > form > div {
+    padding: 10px;
+}
+
+#post-add > form > div > label {
+    vertical-align: top;
+    font-size: 16px;
+    line-height: 40px;
+}
+
+#post-add > form > div:nth-of-type(1) {
+    border-bottom: 1px solid #ddd;
+}
+
+#post-add > form > div:nth-of-type(1) > input {
+    font-size: 18px;
+}
+
+#post-add > form > button {
+    position: fixed;
+    top: 14px;
+    right: 20px;
+    z-index: 100000;
+}
+
+/*# sourceMappingURL=style.css.map */

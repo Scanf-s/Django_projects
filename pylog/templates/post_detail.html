@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>POST DETAIL PAGE</title>
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div id="navbar">
+        {% if post.thumbnail %}
+            <img src="{{ post.thumbnail.url }}" alt="img/no-image.gif">
+        {% endif %}
+        <span>{{ post.title }}</span>
+    </div>
+    <div id="post-detail">
+        <p>{{ post.content|linebreaksbr }}</p>
+        <ul class="comments">
+            {% for comment in post.comment_set.all %}
+                <li class="comment">{{ comment.content }}</li>
+            {% empty %}
+                <li class="comment">아직 댓글이 없습니다</li>
+            {% endfor %}
+        </ul>
+        <form method="POST">
+            {%  csrf_token %}
+            <textarea name="comment"></textarea>
+            <button type="submit" class="btn btn-primary">댓글 작성</button>
+        </form>
+    </div>
+</body>
+</html>
