@@ -7,7 +7,7 @@ from users.models import User
 
 def login_view(request):
     if request.user.is_authenticated:
-        return redirect("/posts/feeds/")
+        return redirect("posts:feeds")
 
     if request.method == "POST":
         # LoginForm 인스턴스 생성
@@ -26,7 +26,10 @@ def login_view(request):
 
             if user:
                 login(request, user) # 로그인
-                return redirect("/posts/feeds/")
+                # redirect 함수에 /posts/feeds/ URL을 전달해줘도 되고,
+                # reverse 함수에 전달하는 인자처럼 APPNAME:URLNAME을 전달해줘도 된다.
+                # urls.py를 참고해보자.
+                return redirect("posts:feeds")
             else:
                 form.add_error(None, "invalid username or password")
 
@@ -44,7 +47,7 @@ def login_view(request):
 
 def logout_view(request):
     logout(request)
-    return redirect("/users/login/")
+    return redirect("users:login")
 
 
 def signup(request):
@@ -53,7 +56,7 @@ def signup(request):
         if form.is_valid():
             user = form.save() # 자동으로 users/form의 signup class의 save()함수가 호출된다.
             login(request, user)
-            return redirect("/posts/feeds/")
+            return redirect("posts:feeds")
     else:  # GET method
         form = SignupForm()
 

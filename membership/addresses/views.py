@@ -1,5 +1,8 @@
+from rest_framework import status
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.authentication import TokenAuthentication
+from rest_framework.permissions import IsAuthenticated
 
 from accounts.models import AccountModel
 from .serializers import AddressSerializer
@@ -8,6 +11,9 @@ from .models import AddressModel
 
 # Create your views here.
 class AddressView(APIView):
+    authentication_classes = [TokenAuthentication]
+    permission_classes = [IsAuthenticated]
+
     def get(self, request):
         addresses = AddressModel.objects.all()
         serializer = AddressSerializer(addresses, many=True)
@@ -24,17 +30,22 @@ class AddressView(APIView):
         "country": "Updated Country"
     }
     """
-
     def put(self, request, address_id):
-        address = AddressModel.objects.get(id=address_id)
+        try:
+            address = AddressModel.objects.get(id=address_id)
+        except AddressModel.DoesNotExist:
+            return Response({'error': 'Address not found'}, status=status.HTTP_404_NOT_FOUND)
+
         serializer = AddressSerializer(address, data=request.data)
         if serializer.is_valid():
             serializer.save()
             return Response(serializer.data)
-        return Response(serializer.errors)
-
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
 
     def delete(self, request, address_id):
-        address = AddressModel.objects.get(id=address_id)
+        try:
+            address = AddressModel.objects.get(id=address_id)
+        except AddressModel.DoesNotExist:
+            return Response({'error': 'Address not found'}, status=status.HTTP_404_NOT_FOUND)
         address.delete()
-        return Response(status=200)
+        return Response(status=status.HTTP_204_NO_CONTENT)

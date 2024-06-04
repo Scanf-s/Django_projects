@@ -1,15 +1,91 @@
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <title>FEEDS</title>
-</head>
-<body>
-<h1>Feeds</h1>
-<div>
-    {{ user.username }}
-    (ID : {{ user.id }})
-</div>
-<a href="/users/logout/">Logout</a>
-</body>
-</html>
+{% extends 'base.html' %}
+{% block content %}
+    <nav>
+        <h1>
+            <a href="{% url 'posts:feeds' %}">Pystagram</a>
+        </h1>
+        <a href="{% url 'posts:post_add' %}">Add Post</a>
+        <a href="{% url 'users:logout' %}">Logout</a>
+    </nav>
+    <div id="feeds" class="post-container">
+        {% for post in posts %}
+            <article class="post" id="post-{{ post.id }}">
+
+                <header class="post-header">
+                    {% if post.user.profile_image %}
+                        <img src="{{ post.user.profile_image.url }}" />
+                    {% endif %}
+                    <span>{{ post.user.username }}</span>
+                </header>
+
+                <div class="post-images splide">
+                    <div class="splide__track">
+                        <ul class="splide__list">
+                            {% for image in post.postimage_set.all %}
+                                {% if image.photo %}
+                                <li class="splide__slide">
+                                    <img src="{{ image.photo.url }}" />
+                                </li>
+                                {% endif %}
+                            {% endfor %}
+                        </ul>
+                    </div>
+                </div>
+
+                <div class="post-content">
+                    {{ post.content | linebreaksbr }}
+                    <div class="post-tags">
+                        {% for tag in post.hashtags.all %}
+                            <a href="{% url 'posts:hashtags' hashtag_name=tag.name %}">#{{ tag.name }}</a>
+                        {% endfor %}
+                    </div>
+                </div>
+
+                <div class="post-buttons">
+                    <button>Likes(0)</button>
+                    <span>Comments({{ post.comment_set.count }})</span>
+                </div>
+
+                <div class="post-comments">
+                    <ul>
+                        {% for comment in post.comment_set.all %}
+                            <li>
+                                <span>{{ comment.user.username }}</span>
+                                <span>{{ comment.content }}</span>
+
+                                <!-- 댓글 삭제 -->
+                                <!-- 현재 로그인된 사용자가 댓글 작성자인지 확인 후, 일치할 경우에만 삭제가 가능함 -->
+                                {% if user == comment.user %}
+                                    <form method="POST" action="{% url 'posts:comment_delete' comment_id=comment.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit">X</button>
+                                    </form>
+                                {% endif %}
+                            </li>
+                        {% endfor %}
+                    </ul>
+                </div>
+
+                <small>{{ post.created_at }}</small>
+                <!-- 댓글 생성 -->
+                <div class="post-comment-create">
+                    <form method="POST" action="{% url 'posts:comment_add' %}">
+                        {% csrf_token %}
+                        <!-- 사용자가 직접 입력하지 않는 post 정보 데이터를 form 내부에 위치시켜서 post id를 넘겨준다. -->
+                        <input type="hidden" name="post" value="{{ post.id }}">
+
+                        {{ comment_form.content }}
+                        <button type="submit">Submit</button>
+                    </form>
+                </div>
+            </article>
+        {% endfor %}
+    </div>
+
+    <script>
+        const elms = document.getElementsByClassName('splide')
+        for (let i = 0; i < elms.length; i++) {
+            new Splide(elms[i]).mount();
+        }
+    </script>
+{% endblock %}
