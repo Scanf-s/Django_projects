@@ -1,7 +1,9 @@
-from django.shortcuts import render, redirect
+from django.http import HttpResponseRedirect
+from django.shortcuts import render, redirect, reverse, get_object_or_404
 from django.contrib.auth import authenticate, login, logout
 from users.forms import LoginForm, SignupForm
 from users.models import User
+from posts.models import Post
 # Create your views here.
 
 
@@ -67,3 +69,46 @@ def signup(request):
     """
     context = {"form": form}
     return render(request, "users/signup.html", context=context)
+
+
+def profile(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    context={"user": user}
+    return render(request, "users/profile.html", context=context)
+
+
+def followers(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    relationships = user.follower_relationships.all()
+    context = {
+        "user": user,
+        "relationships": relationships,
+    }
+    return render(request, "users/followers.html", context=context)
+
+def following(request, user_id):
+    user = get_object_or_404(User, id=user_id)
+    relationships = user.following_relationships.all()
+    context = {
+        "user": user,
+        "relationships": relationships,
+    }
+    return render(request, "users/following.html", context=context)
+
+
+def follow(request, user_id):
+    # 로그인한 유저
+    user = request.user
+
+    # 팔로우하려는 유저
+    target_user = get_object_or_404(User, id=user_id)
+
+    # 팔로우 하려는 유저가 이미 팔로우 된 상태라면, (Unfollow 기능)
+    if target_user in user.following.all():
+        # 팔로우 목록에서 제거
+        user.following.remove(target_user)
+    else: # Follow
+        user.following.add(target_user)
+
+    url_next = request.GET.get("next") or reverse("users:profile", args=[user_id])
+    return HttpResponseRedirect(url_next)

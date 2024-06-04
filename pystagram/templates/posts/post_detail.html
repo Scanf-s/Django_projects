@@ -1,0 +1,7 @@
+{% extends 'base_slider.html' %}
+{% block content %}
+    <div id="feeds" class="post-container">
+        {% url 'posts:post_detail' post_id as action_redirect_to %}
+        {% include 'posts/post.html' with action_redirect_url=action_redirect_to %}
+    </div>
+{% endblock %}

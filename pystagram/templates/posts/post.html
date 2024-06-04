@@ -1,0 +1,92 @@
+<article class="post" id="post-{{ post.id }}">
+    <header class="post-header">
+        <a href="{% url 'users:profile' user_id=post.user.id %}">
+            {% if post.user.profile_image %}
+                <img src="{{ post.user.profile_image.url }}" />
+            {% endif %}
+            <span>{{ post.user.username }}</span>
+        </a>
+
+    <!-- 본인 게시글은 팔로우 버튼이 뜨면 안됨. 따라서 글쓴사람과 현재 로그인한 사람이 다른 경우에만 follow 버튼 노출-->
+    {% if user != post.user %}
+        <form action="{% url 'users:follow' user_id=post.user.id %}?next={{ action_redirect_url }}" method="POST">
+            {% csrf_token %}
+            <button type="submit" class="btn btn-primary">
+                <!-- 만약, 해당 포스트 작성자가 이미 자신의 팔로잉 목록에 존재하는 경우 -->
+                {% if post.user in user.following.all %}
+                    Unfollow
+                {% else %}
+                    Follow
+                {% endif %}
+            </button>
+        </form>
+    </header>
+
+    <div class="post-images splide">
+        <div class="splide__track">
+            <ul class="splide__list">
+                {% for image in post.postimage_set.all %}
+                    {% if image.photo %}
+                    <li class="splide__slide">
+                        <img src="{{ image.photo.url }}" />
+                    </li>
+                    {% endif %}
+                {% endfor %}
+            </ul>
+        </div>
+    </div>
+
+    <div class="post-content">
+        {{ post.content | linebreaksbr }}
+        <div class="post-tags">
+            {% for tag in post.hashtags.all %}
+                <a href="{% url 'posts:hashtags' hashtag_name=tag.name %}">#{{ tag.name }}</a>
+            {% endfor %}
+        </div>
+    </div>
+
+    <div class="post-buttons">
+        <form action="{% url 'posts:post_like' post_id=post.id %}?next={{ action_redirect_url }}" method="POST">
+            {% csrf_token %}
+            <button type="submit"
+                    {% if user in post.like_users.all %}
+                        style = "color: red;"
+                    {% endif %}>
+                Likes({{ post.like_users.count }})
+            </button>
+        </form>
+        <span>Comments({{ post.comment_set.count }})</span>
+    </div>
+
+    <div class="post-comments">
+        <ul>
+            {% for comment in post.comment_set.all %}
+                <li>
+                    <span>{{ comment.user.username }}</span>
+                    <span>{{ comment.content }}</span>
+
+                    <!-- 댓글 삭제 -->
+                    <!-- 현재 로그인된 사용자가 댓글 작성자인지 확인 후, 일치할 경우에만 삭제가 가능함 -->
+                    {% if user == comment.user %}
+                        <form method="POST" action="{% url 'posts:comment_delete' comment_id=comment.id %}">
+                            {% csrf_token %}
+                            <button type="submit">X</button>
+                        </form>
+                    {% endif %}
+                </li>
+            {% endfor %}
+        </ul>
+    </div>
+
+    <small>{{ post.created_at }}</small>
+    <!-- 댓글 생성 -->
+    <div class="post-comment-create">
+        <form method="POST" action="{% url 'posts:comment_add' %}?next={{ action_redirect_url }}">
+            {% csrf_token %}
+            <!-- 사용자가 직접 입력하지 않는 post 정보 데이터를 form 내부에 위치시켜서 post id를 넘겨준다. -->
+            <input type="hidden" name="post" value="{{ post.id }}">
+            {{ comment_form.content }}
+            <button type="submit">Submit</button>
+        </form>
+    </div>
+</article>

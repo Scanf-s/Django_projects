@@ -1,12 +1,6 @@
 {% extends 'base.html' %}
 {% block content %}
-    <nav>
-        <h1>
-            <a href="{% url 'posts:feeds' %}">Pystagram</a>
-        </h1>
-        <a href="{% url 'posts:post_add' %}">Add Post</a>
-        <a href="{% url 'users:logout' %}">Logout</a>
-    </nav>
+    {% include 'posts/nav.html' %}
     <div id="tags">
         <header class="tags-header">
             <h2>#{{ hashtag_name }}</h2>
@@ -16,10 +10,7 @@
             {% for post in posts %}
                 <!-- Post에 연결된 이미지가 있고, 첫번째 이미지가 존재하는 경우 -->
                 {% if post.postimage_set.first and post.postimage_set.first.photo %}
-                    <div class="post-grid">
-                    <!-- Post와 연결된 (Post에 작성된 이미지들 중, 가장 처음 이미지를 썸네일로 설정해줌 -->
-                        <img src="{{ post.postimage_set.first.photo.url }}" alt="">
-                    </div>
+                    {% include 'posts/tags.html' %}
                 {% endif %}
             {% empty %}
                 <p>No Posts</p>

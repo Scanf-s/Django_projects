@@ -1,0 +1,12 @@
+{% extends 'base_nav.html' %}
+
+{% block content %}
+    <div id="tags">
+        <div class="post-grid">
+            <a href="{% url 'posts:post_detail' post_id=post.id %}">
+                <!-- Post와 연결된 (Post에 작성된 이미지들 중, 가장 처음 이미지를 썸네일로 설정해줌 -->
+                <img src="{{ post.postimage_set.first.photo.url }}" alt=""/>
+            </a>
+        </div>
+    </div>
+{% endblock %}

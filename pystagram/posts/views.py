@@ -31,15 +31,14 @@ def comment_add(request):
 
         comment.save()
 
-        print(comment.id)
-        print(comment.content)
-        print(comment.user)
-
+        if request.GET.get("next"):
+            url_next = request.GET.get("next")
+        else:
+            url_next = reverse("posts:feeds") + f"#post-{comment.post.id}"
         # 생성한 comment에서 연결된 post 정보를 가져와서 id값에 해당하는 링크로 redirect
         # HTTPResponseRedirect 함수는 Appname:URLname 형태로 사용할 수 없는데, reverse 함수를 사용해서
         # Appname:URLname을 실제 URL로 변경해서 넣어주어야 한다.
-        url = reverse("posts:feeds") + f"#post-{comment.post.id}"
-        return HttpResponseRedirect(url)
+        return HttpResponseRedirect(url_next)
 
 
 @require_POST
@@ -111,3 +110,27 @@ def hashtags(request, hashtag_name):
         "posts": posts,
     }
     return render(request, "posts/hashtags.html", context=context)
+
+
+def post_detail(request, post_id):
+    post = Post.objects.get(id=post_id)
+    comment_form = CommentForm()
+    context = {
+        "post": post,
+        "comment_form": comment_form,
+    }
+    return render(request, "posts/post_detail.html", context=context)
+
+
+def post_like(request, post_id):
+    post = Post.objects.get(id=post_id)
+    user = request.user
+
+    # 사용자가 Like를 누른 Post에 다시 좋아요 버튼을 누르면, 좋아요를 취소한다
+    if user.like_posts.filter(id=post.id).exists():
+        user.like_posts.remove(post)
+    else:
+        user.like_posts.add(post)
+
+    url_next = request.GET.get("next") or reverse("posts:feeds") + f"#post-{post.id}"
+    return HttpResponseRedirect(url_next)

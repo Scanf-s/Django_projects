@@ -1,11 +1,6 @@
-{% extends 'base.html' %}
+{% extends 'base_nav.html' %}
+
 {% block content %}
-    <nav>
-        <h1>
-            <a href="{% url 'posts:feeds' %}">Pystagram</a>
-        </h1>
-        <a href="{% url 'users:logout' %}">Logout</a>
-    </nav>
     <div id = "post-add">
         <h1>Post Add</h1>
         <form method="POST" enctype="multipart/form-data">

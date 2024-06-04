@@ -12,6 +12,8 @@ class Post(models.Model):
     hashtags = models.ManyToManyField("posts.HashTag", verbose_name="hashtag list", blank=True)
     created_at = models.DateTimeField("Created_at", auto_now_add=True)
 
+    def __str__(self):
+        return f"{self.user.username}'s Post(id:{self.id})"
 
 class PostImage(models.Model):
     post = models.ForeignKey(
@@ -42,3 +44,7 @@ class HashTag(models.Model):
 
     def __str__(self):
         return self.name
+
+    class Meta:
+        verbose_name = "Hashtag"
+        verbose_name_plural = "Hashtags"

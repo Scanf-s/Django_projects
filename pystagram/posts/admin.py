@@ -48,6 +48,14 @@ class PostImageInline(admin.TabularInline):
     #     }
     # }
 
+class LikeUserInline(admin.TabularInline):
+    model = Post.like_users.through
+    verbose_name = "좋아요 한 User"
+    verbose_name_plural = f"{verbose_name} 목록"
+    extra = 1
+
+    def has_change_permission(self, request, obj=None):
+        return False
 
 # Register your models here.
 @admin.register(Post)
@@ -60,6 +68,7 @@ class PostAdmin(admin.ModelAdmin):
     inlines = [
         CommentInline,
         PostImageInline,
+        LikeUserInline,
     ]
 
     formfield_overrides = {

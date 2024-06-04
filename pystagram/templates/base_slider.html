@@ -1,0 +1,17 @@
+{% extends '_base.html' %}
+{% load static %}
+{% block head %}
+    <link href="{% static 'splide/splide.css' %}" rel="stylesheet">
+    <script src="{% static 'splide/splide.js' %}"></script>
+{% endblock %}
+
+{% block base_content %}
+    {% include 'posts/nav.html' %}
+    {% block content %}{% endblock %}
+    <script>
+        const elms = document.getElementsByClassName('splide')
+        for (let i = 0; i < elms.length; i++) {
+            new Splide(elms[i]).mount();
+        }
+    </script>
+{% endblock %}
