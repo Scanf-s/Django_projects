@@ -11,7 +11,7 @@ from .models import AddressModel
 
 # Create your views here.
 class AddressView(APIView):
-    authentication_classes = [TokenAuthentication]
+    # authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
 
     def get(self, request):
