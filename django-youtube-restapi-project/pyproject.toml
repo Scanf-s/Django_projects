@@ -1,0 +1,16 @@
+[tool.poetry]
+name = "django-youtube-restapi-project"
+version = "0.1.0"
+description = ""
+authors = ["Sullung <sullung2yo@gmail.com>"]
+readme = "README.md"
+
+[tool.poetry.dependencies]
+python = "^3.12"
+django = "^5.0.6"
+djangorestframework = "^3.15.1"
+
+
+[build-system]
+requires = ["poetry-core"]
+build-backend = "poetry.core.masonry.api"
