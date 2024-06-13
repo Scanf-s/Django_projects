@@ -1,0 +1,12 @@
+version: "3.11"
+services:
+  app:
+    build:
+      context: .
+      args:
+        - DEV=true
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./app:/app
+    command: sh -c "python manage.py runserver 0.0.0.0:8000" # docker-compose up시 실행되는 명령어

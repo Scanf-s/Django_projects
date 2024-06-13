@@ -1,57 +1,38 @@
-# Python 3.12이 설치된 Slim Linux
-FROM python:3.12-slim
+#  Python 3.11이 설치된 Alpine Linux 3.19
+# Alpine Linux는 경량화된 리눅스 배포판으로, 컨테이너 환경에 적합
+FROM python:3.12-alpine3.20
 
-# 이미지에 메타데이터 추가
+# LABEL 명령어는 이미지에 메타데이터를 추가합니다. 여기서는 이미지의 유지 관리자를 "seopftware"로 지정하고 있습니다.
 LABEL maintainer="sullungim"
 
-# 작업 디렉토리 설정
+# 환경 변수 PYTHONUNBUFFERED를 1로 설정합니다.
+# 이는 Python이 표준 입출력 버퍼링을 비활성화하게 하여, 로그가 즉시 콘솔에 출력되게 합니다.
+# 이는 Docker 컨테이너에서 로그를 더 쉽게 볼 수 있게 합니다.
+ENV PYTHONUNBUFFERED 1
+
+# 로컬 파일 시스템의 requirements.txt 파일을 컨테이너의 /tmp/requirements.txt로 복사합니다.
+# 이 파일은 필요한 Python 패키지들을 명시합니다.
+COPY ./requirements.txt /tmp/requirements.txt
+COPY ./requirements.dev.txt /tmp/requirements.dev.txt
+COPY ./app /app
+
 WORKDIR /app
-
-# 시스템 종속성 설치
-RUN apt-get update && apt-get install -y \
-    build-essential \
-    libssl-dev \
-    libbz2-dev \
-    libreadline-dev \
-    libsqlite3-dev \
-    libffi-dev \
-    liblzma-dev \
-    libncurses5-dev \
-    libgdbm-dev \
-    tk-dev \
-    && rm -rf /var/lib/apt/lists/*
-
-# 사용자 생성
-RUN adduser \
-    --disabled-password \
-    --no-create-home \
-    django-user
-
-# Poetry 설치
-RUN curl -sSL https://install.python-poetry.org | python3 -
-
-# 환경 변수 설정
-ENV PATH="/root/.local/bin:$PATH"
-ENV PYTHONUNBUFFERED=1
-
-# 의존성 관리 파일 복사
-COPY pyproject.toml poetry.lock ./
-
-# 의존성 설치
-RUN poetry install --no-root --no-dev
-
-# 나머지 프로젝트 파일 복사
-COPY . .
-
-# Django에서 사용할 포트 노출
 EXPOSE 8000
 
-# 개발판=True, 배포판=False
 ARG DEV=false
 
-# 작업 디렉토리 및 사용자 설정
-WORKDIR /app
-USER django-user
+RUN python -m venv /py && \
+    /py/bin/pip install --upgrade pip && \
+    /py/bin/pip install -r /tmp/requirements.txt && \
+    if [ $DEV = "true" ]; \
+        then /py/bin/pip install -r /tmp/requirements.dev.txt ; \
+    fi && \
+    rm -rf /tmp && \
+    adduser \
+        --disabled-password \
+        --no-create-home \
+        django-user
 
-# 컨테이너 시작 시 실행할 명령어
-# CMD ["poetry", "run", "python", "manage.py", "runserver", "0.0.0.0:8000"]
+ENV PATH="/py/bin:$PATH"
+
+USER django-user
