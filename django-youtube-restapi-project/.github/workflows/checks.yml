@@ -1,0 +1,26 @@
+name: CI/CD Pipeline
+
+on: [push]
+
+jobs:
+  test-lint:
+    name: Test and Lint
+    runs-on: ubuntu-20.04 # 작업 환경 설정
+    steps: # 작업 단계 설정
+      - name: Checkout
+        uses: actions/checkout@v2
+
+      - name: Log in to Docker Hub # 도커 이미지를 사용하기 위한 로그인 (미리 깃허브에 Docker 정보를 저장해두었음)
+        uses: docker/login-action@v1
+        with:
+          username: ${{ secrets.DOCKERHUB_USER }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+      
+      - name: Check Out - pull repository code # GitHub에 올라가 있는 코드를 직접 작업환경으로 가져오는 작업
+        uses: actions/checkout@v2
+
+      - name: Run Test-Code # 테스트 코드 실행
+        run: docker-compose run --rm app sh -c "python manage.py test"
+
+      - name: Run Flake8 for Lint # Flake8 실행해서 문법 개선사항 확인
+        run: docker-compose run --rm app sh -c "flake8"
