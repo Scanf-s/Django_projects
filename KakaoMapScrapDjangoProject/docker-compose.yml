@@ -1,0 +1,38 @@
+version: "3.11"
+services:
+  app:
+    build:
+      context: .
+      args:
+        - DEV=true
+    volumes:
+      - ./app:/app
+      - ./data:/app/data  # 새로운 볼륨 추가
+      - ./.flake8:/app/.flake8  # .flake8 파일 추가
+    ports:
+      - "8000:8000"
+    command: >
+      sh -c "python manage.py wait_for_db &&
+             python manage.py collectstatic --no-input &&
+             python manage.py migrate &&
+             python manage.py runserver 0.0.0.0:8000"
+    environment:
+      - DB_HOST=db
+      - DB_NAME=mydb
+      - DB_USER=postgres
+      - DB_PASS=123123
+      - DB_PORT=5432
+    depends_on:
+      - db
+    tmpfs:
+      - /tmp
+
+  db:
+    image: postgres:13
+    volumes:
+      - ./data/db:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=123123
+      - POSTGRES_DB=mydb
+
